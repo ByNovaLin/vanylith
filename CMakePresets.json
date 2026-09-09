@@ -1,0 +1,74 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 24,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "windows-x64-debug",
+      "displayName": "Windows x64 Debug",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build/windows-x64-debug",
+      "cacheVariables": {
+        "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
+        "VANITYFORGE_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "windows-x64-release",
+      "displayName": "Windows x64 Release",
+      "inherits": "windows-x64-debug",
+      "binaryDir": "${sourceDir}/build/windows-x64-release"
+    },
+    {
+      "name": "windows-x64-cuda-rc",
+      "displayName": "Windows x64 CUDA RC",
+      "inherits": "windows-x64-debug",
+      "binaryDir": "${sourceDir}/build/windows-x64-cuda-rc",
+      "cacheVariables": {
+        "VANITYFORGE_ENABLE_CUDA": "ON",
+        "VANITYFORGE_CUDA_ARCHITECTURES": "80-real;86-real;89-real;120"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "windows-x64-debug",
+      "configuration": "Debug"
+    },
+    {
+      "name": "release",
+      "configurePreset": "windows-x64-release",
+      "configuration": "Release"
+    },
+    {
+      "name": "cuda-rc",
+      "configurePreset": "windows-x64-cuda-rc",
+      "configuration": "Release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "windows-x64-debug",
+      "configuration": "Debug",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "release",
+      "configurePreset": "windows-x64-release",
+      "configuration": "Release",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "cuda-rc",
+      "configurePreset": "windows-x64-cuda-rc",
+      "configuration": "Release",
+      "output": { "outputOnFailure": true }
+    }
+  ]
+}

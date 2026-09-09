@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vanylith</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/branding/vanylith-icon.svg">
+  <style>
+    /* ==========================================================================
+       1. Design System & CSS Variables
+       ========================================================================== */
+    :root {
+      --bg-base: #0b0c10;
+      --bg-surface: rgba(18, 20, 26, 0.75); /* Glassmorphism Base */
+      --bg-surface-solid: #12141a;
+      --bg-surface-elevated: rgba(24, 27, 36, 0.85);
+      --bg-surface-hover: rgba(31, 35, 48, 0.9);
+      --bg-input: #0e1015;
+      
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-default: rgba(255, 255, 255, 0.12);
+      --border-focus: #4e5d78;
+      
+      --text-main: #f0f3f8;
+      --text-muted: #8a94a6;
+      --text-dim: #525c6e;
+      
+      --accent-cyan: #00d8ff;
+      --accent-cyan-glow: rgba(0, 216, 255, 0.15);
+      --accent-emerald: #10b981;
+      --accent-emerald-glow: rgba(16, 185, 129, 0.15);
+      --accent-amber: #f59e0b;
+      --accent-amber-glow: rgba(245, 158, 11, 0.15);
+      --accent-rose: #f43f5e;
+      --accent-rose-glow: rgba(244, 63, 94, 0.15);
+      --accent-purple: #8b5cf6;
+      
+      /* Advanced Multi-language Font Stack */
+      --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Yu Gothic", "Meiryo", "Hiragino Kaku Gothic ProN", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+      --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-pill: 9999px;
+      
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --shadow-card: 0 8px 32px -4px rgba(0, 0, 0, 0.5);
+      --shadow-hover: 0 12px 48px -8px rgba(0, 0, 0, 0.7);
+      
+      /* Smooth iOS/macOS cubic-bezier transitions */
+      --transition-fast: 0.15s cubic-bezier(0.22, 1, 0.36, 1);
+      --transition-ios: 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* ==========================================================================
+       2. Reset & Global Styles
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      background-image: 
+        radial-gradient(circle at 15% 50%, rgba(0, 216, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.03) 0%, transparent 50%);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    code, pre, .mono {
+      font-family: var(--font-mono);
+      font-feature-settings: "tnum" 1, "zero" 1;
+    }
+
+    button, input, select {
+      font-family: inherit;
+      color: inherit;
+      background: transparent;
+      border: none;
+      outline: none;
+    }
+
+    button {
+      cursor: pointer;
+      user-select: none;
+      transition: all var(--transition-ios);
+    }
+
+    /* ==========================================================================
+       3. Layout Grid
+       ========================================================================== */
+    .app-container {
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 32px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      flex: 1;
+    }
+
+    /* Header (Glassmorphism) */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      background: var(--bg-surface);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 20px;
+      z-index: 50;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      display: block;
+      width: 166px;
+      height: 34px;
+      object-fit: contain;
+      object-position: left center;
+      flex: 0 0 auto;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: 6px;
+      font-weight: 500;
+    }
+
+    .tag-local {
+      padding: 3px 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .header-status-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Language Switcher */
+    .lang-switcher {
+      position: relative;
+    }
+    .lang-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+    .lang-btn:hover {
+      background: rgba(255,255,255,0.08);
+    }
+    .lang-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 8px;
+      background: var(--bg-surface);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      display: none;
+      flex-direction: column;
+      z-index: 100;
+      min-width: 140px;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-8px) scale(0.98);
+      transform-origin: top right;
+      transition: opacity var(--transition-ios), transform var(--transition-ios);
+    }
+    .lang-dropdown.show {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .lang-option {
+      padding: 10px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background var(--transition-fast);
+    }
+    .lang-option:hover {
+      background: rgba(255,255,255,0.08);
+    }
+    .lang-option.active {
+      color: var(--accent-cyan);
+      background: rgba(0, 216, 255, 0.05);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid transparent;
+      background: var(--bg-surface-elevated);
+      transition: all var(--transition-ios);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      transition: background var(--transition-ios);
+    }
+
+    .status-badge[data-status="READY"] {
+      color: var(--accent-cyan);
+      border-color: rgba(0, 216, 255, 0.25);
+      background: rgba(0, 216, 255, 0.08);
+    }
+    .status-badge[data-status="READY"] .status-dot {
+      background: var(--accent-cyan);
+    }
+
+    .status-badge[data-status="RUNNING"] {
+      color: var(--accent-emerald);
+      border-color: rgba(16, 185, 129, 0.3);
+      background: var(--accent-emerald-glow);
+    }
+    .status-badge[data-status="RUNNING"] .status-dot {
+      background: var(--accent-emerald);
+      box-shadow: 0 0 10px var(--accent-emerald);
+      animation: pulse-dot 1.5s infinite ease-in-out;
+    }
+
+    .status-badge[data-status="PAUSED"] {
+      color: var(--accent-amber);
+      border-color: rgba(245, 158, 11, 0.3);
+      background: var(--accent-amber-glow);
+    }
+    .status-badge[data-status="PAUSED"] .status-dot {
+      background: var(--accent-amber);
+    }
+
+    .status-badge[data-status="COMPLETED"] {
+      color: var(--accent-purple);
+      border-color: rgba(139, 92, 246, 0.3);
+      background: rgba(139, 92, 246, 0.15);
+    }
+    .status-badge[data-status="COMPLETED"] .status-dot {
+      background: var(--accent-purple);
+    }
+
+    .status-badge[data-status="ERROR"] {
+      color: var(--accent-rose);
+      border-color: rgba(244, 63, 94, 0.3);
+      background: var(--accent-rose-glow);
+    }
+    .status-badge[data-status="ERROR"] .status-dot {
+      background: var(--accent-rose);
+    }
+
+    .status-badge[data-status="STOPPED"] {
+      color: var(--text-muted);
+      border-color: var(--border-default);
+      background: rgba(148, 163, 184, 0.08);
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* Main Dashboard Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .full-width-col {
+      grid-column: 1 / -1;
+    }
+
+    /* Cards (Solid Backgrounds) */
+    .card {
+      background: var(--bg-surface-solid);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 22px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      transition: transform var(--transition-ios), box-shadow var(--transition-ios);
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title svg {
+      color: var(--accent-cyan);
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       4. Task Config Section & Segmented Controls
+       ========================================================================== */
+    .task-form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* iOS Style Segmented Control */
+    .segmented-control {
+      position: relative;
+      display: flex;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      z-index: 1;
+    }
+    .sc-indicator {
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 0;
+      background: var(--bg-surface-elevated);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-default);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      transition: transform var(--transition-ios), width var(--transition-ios);
+      z-index: -1;
+    }
+    .sc-btn {
+      flex: 1;
+      padding: 8px 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.2;
+      border-radius: var(--radius-sm);
+      z-index: 2;
+    }
+    .sc-btn.active {
+      color: var(--text-main);
+    }
+
+    /* Inputs */
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .input-wrapper:focus-within {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px var(--accent-cyan-glow);
+    }
+    .input-wrapper.error {
+      border-color: var(--accent-rose);
+      box-shadow: 0 0 0 3px var(--accent-rose-glow);
+    }
+
+    .input-prefix-addon {
+      padding: 0 12px 0 14px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      background: var(--bg-surface-elevated);
+      height: 100%;
+      display: flex;
+      align-items: center;
+      border-right: 1px solid var(--border-subtle);
+      border-top-left-radius: var(--radius-md);
+      border-bottom-left-radius: var(--radius-md);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: var(--text-main);
+    }
+    .form-input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .input-hint-error {
+      font-size: 11px;
+      color: var(--accent-rose);
+      min-height: 16px;
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+    .input-hint-error.visible {
+      display: flex;
+    }
+
+    /* Target Count / Repeat length Buttons */
+    .count-quick-btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .count-chip {
+      flex: 1;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+    }
+    .count-chip:hover {
+      border-color: var(--border-focus);
+      color: var(--text-main);
+    }
+    .count-chip.active {
+      background: var(--bg-surface-elevated);
+      color: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+    }
+
+    /* Smooth Form Visibility Transitions */
+    .form-section {
+      display: none;
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    .form-section.active {
+      display: flex;
+      animation: fadeSlideIn var(--transition-ios) forwards;
+    }
+    @keyframes fadeSlideIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Estimation Bar */
+    .estimation-panel {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 16px;
+    }
+    .estimate-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .estimate-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .estimate-val {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      overflow-wrap: anywhere;
+    }
+
+    /* Actions */
+    .task-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .btn-primary {
+      background: #00d8ff;
+      color: #0b0c10;
+      box-shadow: 0 4px 14px rgba(0, 216, 255, 0.3);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #38e1ff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 216, 255, 0.4);
+    }
+    .btn-warning {
+      background: var(--accent-amber);
+      color: #0b0c10;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
+    }
+    .btn-warning:hover:not(:disabled) {
+      background: #fbbf24;
+      transform: translateY(-2px);
+    }
+    .btn-danger {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: rgba(244, 63, 94, 0.4);
+      color: var(--accent-rose);
+    }
+    .btn-danger:hover:not(:disabled) {
+      background: rgba(244, 63, 94, 0.25);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: var(--bg-surface-elevated);
+      border-color: var(--border-default);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--bg-surface-hover);
+      border-color: var(--border-focus);
+      transform: translateY(-2px);
+    }
+
+    /* ==========================================================================
+       5. Compute Devices Grid
+       ========================================================================== */
+    .devices-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .device-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: all var(--transition-ios);
+      position: relative;
+    }
+
+    .device-card.enabled {
+      border-color: rgba(255,255,255,0.15);
+      background: linear-gradient(180deg, rgba(31, 35, 48, 0.6) 0%, rgba(24, 27, 36, 0.6) 100%);
+    }
+
+    .device-card.disabled {
+      opacity: 0.65;
+    }
+
+    .device-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .device-identity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .device-icon {
+      color: var(--accent-cyan);
+    }
+
+    .device-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .backend-tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.05em;
+    }
+
+    .backend-CUDA {
+      background: rgba(118, 185, 0, 0.15);
+      color: #76b900;
+      border: 1px solid rgba(118, 185, 0, 0.3);
+    }
+
+    .backend-OpenCL {
+      background: rgba(0, 144, 208, 0.15);
+      color: #0090d0;
+      border: 1px solid rgba(0, 144, 208, 0.3);
+    }
+
+    .backend-CPU {
+      background: rgba(139, 92, 246, 0.15);
+      color: #a78bfa;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    /* Custom Switch Toggle */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--bg-surface-elevated);
+      border: 1px solid var(--border-default);
+      transition: var(--transition-ios);
+      border-radius: var(--radius-pill);
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: var(--text-muted);
+      transition: var(--transition-ios);
+      border-radius: 50%;
+    }
+    .toggle-switch input:checked + .toggle-slider {
+      background-color: rgba(0, 216, 255, 0.2);
+      border-color: var(--accent-cyan);
+    }
+    .toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(18px);
+      background-color: var(--accent-cyan);
+    }
+
+    /* Device Metrics */
+    .device-metrics-grid {
+      display: grid;
+      grid-template-columns: 1.5fr repeat(3, 1fr);
+      gap: 16px;
+      align-items: center;
+      background: rgba(0,0,0,0.3);
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+    }
+    .metric-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .metric-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .metric-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .metric-value.hashrate {
+      color: var(--accent-cyan);
+      font-size: 15px;
+    }
+    .progress-bar-container {
+      height: 5px;
+      background: var(--bg-surface-elevated);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-cyan);
+      transition: width var(--transition-ios);
+    }
+
+    /* ==========================================================================
+       6. Performance Metrics HUD
+       ========================================================================== */
+    .performance-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .stat-hero-card {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(31, 35, 48, 0.9) 0%, rgba(18, 20, 26, 0.9) 100%);
+      border: 1px solid rgba(0, 216, 255, 0.2);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: inset 0 0 40px rgba(0, 216, 255, 0.05);
+    }
+    .hero-stat-info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .hero-stat-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .hero-stat-unit {
+      font-size: 18px;
+      color: var(--accent-cyan);
+      font-weight: 500;
+    }
+    .stat-mini-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .mini-stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .mini-stat-value {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Probability Grid in Stats */
+    .prob-badges-row {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+    }
+    .prob-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .prob-header {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .prob-time {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      overflow-wrap: anywhere;
+    }
+
+    /* ==========================================================================
+       7. Performance Real-time Chart
+       ========================================================================== */
+    .chart-container {
+      position: relative;
+      height: 220px;
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    canvas#hashrateCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .chart-legend {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: color var(--transition-fast);
+    }
+    .legend-item:hover {
+      color: var(--text-main);
+    }
+    .legend-item.active {
+      color: var(--text-main);
+    }
+    .legend-color-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* ==========================================================================
+       8. Found Addresses / Results Section
+       ========================================================================== */
+    .security-notice {
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: var(--radius-md);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: #34d399;
+      line-height: 1.5;
+    }
+    .security-notice svg {
+      flex-shrink: 0;
+    }
+
+    .results-empty-state {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--text-dim);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .results-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+    .results-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .results-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .results-list::-webkit-scrollbar-thumb {
+      background: var(--border-focus);
+      border-radius: 3px;
+    }
+
+    .result-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      transition: var(--transition-ios);
+      animation: fadeSlideIn var(--transition-ios);
+    }
+    .result-card:hover {
+      border-color: rgba(255,255,255,0.2);
+      background: var(--bg-surface-elevated);
+      transform: translateX(4px);
+    }
+
+    .result-main {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow: hidden;
+    }
+    .result-address-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .address-index {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-dim);
+      background: var(--bg-surface-elevated);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+    }
+    .address-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      word-break: break-all;
+    }
+    .address-highlight {
+      color: var(--accent-cyan);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+    .result-meta-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .badge-verified {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent-emerald);
+      font-weight: 600;
+    }
+    .badge-saved {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent-cyan);
+    }
+    .btn-copy {
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .btn-copy:hover {
+      color: var(--text-main);
+      border-color: var(--border-default);
+      background: var(--bg-surface-hover);
+    }
+    .btn-copy.copied {
+      color: var(--accent-emerald);
+      border-color: var(--accent-emerald);
+    }
+
+    /* ==========================================================================
+       9. Modals & Alerts (Glassmorphism)
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-ios);
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 460px;
+      padding: 28px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      transform: scale(0.95) translateY(10px);
+      transition: transform var(--transition-ios);
+    }
+    .modal-overlay.active .modal-card {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .modal-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    /* Toast Notification (Glassmorphism) */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 1100;
+    }
+    .toast {
+      background: var(--bg-surface);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      animation: toast-in var(--transition-ios);
+    }
+    @keyframes toast-in {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* ==========================================================================
+       10. Responsive Breakpoints
+       ========================================================================== */
+    @media (max-width: 1200px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      .app-container {
+        padding: 16px 20px 32px;
+      }
+    }
+    @media (max-width: 768px) {
+      .dashboard-grid > *,
+      .card,
+      .task-form-grid,
+      .segmented-control {
+        min-width: 0;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .header-status-group {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .brand-group,
+      .card-header,
+      .card-title-group {
+        min-width: 0;
+      }
+      .brand-group {
+        flex-wrap: wrap;
+      }
+      .tag-local {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .task-form-grid {
+        grid-template-columns: 1fr;
+      }
+      .estimation-panel {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .estimate-val {
+        overflow-wrap: anywhere;
+      }
+      .device-metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .performance-grid {
+        grid-template-columns: 1fr;
+      }
+      .prob-badges-row {
+        grid-template-columns: 1fr;
+      }
+      .result-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .btn-copy {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    @media (max-width: 480px) {
+      .app-container {
+        padding: 12px 12px 24px;
+        gap: 16px;
+      }
+      .header,
+      .card {
+        padding: 16px 14px;
+      }
+      .estimation-panel {
+        grid-template-columns: 1fr;
+        padding: 14px;
+      }
+      .sc-btn {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+      .count-chip {
+        min-width: 56px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <header class="header">
+      <div class="brand-group">
+        <img class="brand-logo" src="/assets/branding/vanylith-horizontal.svg" alt="Vanylith">
+        <span class="brand-sub">v0.1.0</span>
+        <span class="tag-local"><span data-i18n="localMode">本地运行</span></span>
+      </div>
+
+      <div class="header-status-group">
+        <div class="lang-switcher" id="langSwitcher">
+          <button class="lang-btn" id="langBtn">
+            🌐 <span id="currentLangText">简体中文</span>
+          </button>
+          <div class="lang-dropdown" id="langDropdown">
+            <div class="lang-option active" data-lang="zh-CN">简体中文</div>
+            <div class="lang-option" data-lang="en-US">English</div>
+            <div class="lang-option" data-lang="ja-JP">日本語</div>
+            <div class="lang-option" data-lang="de-DE">Deutsch</div>
+            <div class="lang-option" data-lang="ko-KR">한국어</div>
+          </div>
+        </div>
+        <div id="appStatusBadge" class="status-badge" data-status="READY">
+          <span class="status-dot"></span>
+          <span id="appStatusText" data-i18n="ready">就绪</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard-grid">
+
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                <span data-i18n="taskConfig">任务配置</span>
+              </span>
+            </div>
+            <span class="card-subtitle" data-i18n="taskConfigSub">TRON Base58 靓号匹配</span>
+          </div>
+
+          <div class="task-form-grid">
+            
+            <!-- Matrix: Match Mode -->
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label" data-i18n="matchMode">匹配方式</label>
+              <div class="segmented-control" id="modeControl">
+                <div class="sc-indicator" id="modeIndicator"></div>
+                <button type="button" class="sc-btn active" data-val="specific" data-i18n="modeSpecific">指定字符</button>
+                <button type="button" class="sc-btn" data-val="repeat" data-i18n="modeRepeat">连续字符</button>
+              </div>
+            </div>
+
+            <!-- Matrix: Match Position -->
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label" data-i18n="matchPosition">匹配位置</label>
+              <div class="segmented-control" id="positionControl">
+                <div class="sc-indicator" id="posIndicator"></div>
+                <button type="button" class="sc-btn" data-val="prefix" data-i18n="typePrefix">前缀</button>
+                <button type="button" class="sc-btn active" data-val="suffix" data-i18n="typeSuffix">后缀</button>
+                <button type="button" class="sc-btn" data-val="both" data-i18n="typeBoth">前缀 + 后缀</button>
+              </div>
+            </div>
+
+            <!-- Dynamic Input Fields Area -->
+            <!-- 1. Specific Prefix -->
+            <div class="form-group form-section" id="grpSpecificPrefix">
+              <label class="form-label" data-i18n="prefixLabel">前缀（T 后）</label>
+              <div class="input-wrapper" id="prefixWrapper">
+                <span class="input-prefix-addon mono">T</span>
+                <input type="text" id="inputPrefix" class="form-input mono" placeholder="e.g. ABC" autocomplete="off" spellcheck="false" />
+              </div>
+              <span class="input-hint-error mono" id="prefixError"></span>
+            </div>
+
+            <!-- 2. Specific Suffix -->
+            <div class="form-group form-section active" id="grpSpecificSuffix">
+              <label class="form-label" data-i18n="suffixLabel">后缀（地址末尾）</label>
+              <div class="input-wrapper" id="suffixWrapper">
+                <input type="text" id="inputSuffix" class="form-input mono" value="8888" placeholder="e.g. 888888" autocomplete="off" spellcheck="false" />
+              </div>
+              <span class="input-hint-error mono" id="suffixError"></span>
+            </div>
+
+            <!-- 3. Repeat Prefix -->
+            <div class="form-group form-section" id="grpRepeatPrefix">
+              <label class="form-label" data-i18n="repeatPrefixLabel">前缀连续长度</label>
+              <div class="count-quick-btns" id="chipsRepeatPrefix">
+                <button type="button" class="count-chip active" data-val="5">5A</button>
+                <button type="button" class="count-chip" data-val="6">6A</button>
+                <button type="button" class="count-chip" data-val="7">7A</button>
+                <button type="button" class="count-chip" data-val="8">8A</button>
+              </div>
+            </div>
+
+            <!-- 4. Repeat Suffix -->
+            <div class="form-group form-section" id="grpRepeatSuffix">
+              <label class="form-label" data-i18n="repeatSuffixLabel">后缀连续长度</label>
+              <div class="count-quick-btns" id="chipsRepeatSuffix">
+                <button type="button" class="count-chip active" data-val="5">5A</button>
+                <button type="button" class="count-chip" data-val="6">6A</button>
+                <button type="button" class="count-chip" data-val="7">7A</button>
+                <button type="button" class="count-chip" data-val="8">8A</button>
+              </div>
+            </div>
+
+            <!-- Target Count -->
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label" data-i18n="targetCount">生成数量</label>
+              <div class="input-wrapper" style="max-width: 150px;">
+                <input type="number" id="inputTargetCount" class="form-input mono" value="5" min="1" max="1000" />
+              </div>
+              <div class="count-quick-btns" style="margin-top: 4px;" id="targetCountChips">
+                <button type="button" class="count-chip" data-count="1">1</button>
+                <button type="button" class="count-chip active" data-count="5">5</button>
+                <button type="button" class="count-chip" data-count="10">10</button>
+                <button type="button" class="count-chip" data-count="50">50</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="estimation-panel">
+            <div class="estimate-item">
+              <span class="estimate-label" data-i18n="searchSpace">搜索空间</span>
+              <span class="estimate-val mono" id="estSearchSpace">~1.13 M</span>
+            </div>
+            <div class="estimate-item">
+              <span class="estimate-label" data-i18n="est50Time">50% 命中时间</span>
+              <span class="estimate-val mono" id="est50Time">< 1s</span>
+            </div>
+            <div class="estimate-item">
+              <span class="estimate-label" data-i18n="est90Time">90% 命中时间</span>
+              <span class="estimate-val mono" id="est90Time">< 1s</span>
+            </div>
+            <div class="estimate-item">
+              <span class="estimate-label" data-i18n="patternPreview">地址预览</span>
+              <span class="estimate-val mono" id="estPreview" style="color: var(--accent-cyan); font-size: 11px;">T...8888</span>
+            </div>
+          </div>
+
+          <div class="task-actions">
+            <button id="btnStart" class="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span data-i18n="btnStart">开始搜索</span>
+            </button>
+            <button id="btnPause" class="btn btn-warning" style="display: none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              <span data-i18n="btnPause">暂停</span>
+            </button>
+            <button id="btnResume" class="btn btn-primary" style="display: none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span data-i18n="btnResume">继续</span>
+            </button>
+            <button id="btnStop" class="btn btn-danger" style="display: none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16"/></svg>
+              <span data-i18n="btnStop">停止</span>
+            </button>
+            <button id="btnReset" class="btn btn-secondary" style="display: none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+              <span data-i18n="btnReset">新建任务</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                <span data-i18n="computeDevices">计算设备</span>
+              </span>
+            </div>
+            <span class="card-subtitle" id="deviceCountSummary">-- / --</span>
+          </div>
+          <div class="devices-list" id="devicesList">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span data-i18n="engineTelemetry">引擎状态</span>
+              </span>
+            </div>
+            <span class="card-subtitle mono" data-i18n="sampling">采样频率：1000ms</span>
+          </div>
+          <div class="performance-grid">
+            <div class="stat-hero-card">
+              <div class="hero-stat-info">
+                <span class="hero-stat-label">
+                  <span class="status-dot" style="background: var(--accent-cyan);"></span>
+                  <span data-i18n="totalHashrate">总算力</span>
+                </span>
+                <div class="hero-stat-value mono">
+                  <span id="hudHashrateVal">0.00</span>
+                  <span class="hero-stat-unit" id="hudHashrateUnit">MKeys/s</span>
+                </div>
+              </div>
+              <div>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="1.5" opacity="0.6">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="stat-mini-card">
+              <span class="mini-stat-label" data-i18n="checkedKeys">已搜索</span>
+              <span class="mini-stat-value mono" id="hudCheckedVal">0</span>
+            </div>
+            <div class="stat-mini-card">
+              <span class="mini-stat-label" data-i18n="elapsedTime">运行时间</span>
+              <span class="mini-stat-value mono" id="hudElapsedVal">00:00:00</span>
+            </div>
+            <div class="stat-mini-card">
+              <span class="mini-stat-label" data-i18n="matchesFound">已找到</span>
+              <span class="mini-stat-value mono" id="hudFoundVal" style="color: var(--accent-emerald);">0 / 5</span>
+            </div>
+            <div class="stat-mini-card">
+              <span class="mini-stat-label" data-i18n="averageSpeed">平均算力</span>
+              <span class="mini-stat-value mono" id="hudAvgSpeedVal">--</span>
+            </div>
+            <div class="prob-badges-row">
+              <div class="prob-item">
+                <span class="prob-header" data-i18n="prob50">50% 命中概率</span>
+                <span class="prob-time mono" id="prob50Val">--</span>
+              </div>
+              <div class="prob-item">
+                <span class="prob-header" data-i18n="prob90">90% 命中概率</span>
+                <span class="prob-time mono" id="prob90Val">--</span>
+              </div>
+              <div class="prob-item">
+                <span class="prob-header" data-i18n="prob95">95% 命中概率</span>
+                <span class="prob-time mono" id="prob95Val">--</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <span data-i18n="rtHashrateTitle">实时算力（最近 60 秒）</span>
+              </span>
+            </div>
+            <div class="chart-legend" id="chartLegend"></div>
+          </div>
+          <div class="chart-container">
+            <canvas id="hashrateCanvas"></canvas>
+          </div>
+        </section>
+      </div>
+
+      <div class="full-width-col">
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                <span data-i18n="foundAddressesTitle">已找到地址</span>
+              </span>
+            </div>
+            <span class="card-subtitle mono" id="resultsCountBadge">0 个地址</span>
+          </div>
+
+          <div class="security-notice">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <span data-i18n="securityNotice">私钥安全：私钥仅由本地 C++ 引擎生成并保存，Web 控制台不会读取、传输或显示任何私钥，仅管理和展示公开地址。</span>
+          </div>
+
+          <div class="results-list" id="resultsList">
+            <div class="results-empty-state" id="resultsEmpty">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <span data-i18n="emptyState">暂未找到靓号。请在上方配置并启动任务。</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="stopConfirmModal">
+    <div class="modal-card">
+      <div class="modal-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-rose)" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <span data-i18n="stopModalTitle">停止搜索任务？</span>
+      </div>
+      <p class="modal-desc" data-i18n="stopModalDesc">
+        确定要停止当前生成任务吗？计算核心将立即挂起，GPU 资源将被释放。已找到的地址均已安全保存在本地磁盘中。
+      </p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="modalBtnCancel" data-i18n="btnCancel">取消</button>
+        <button type="button" class="btn btn-danger" id="modalBtnConfirmStop" data-i18n="btnConfirmStop">停止任务</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    /**
+     * Vanylith v0.1 — Local Dashboard Controller
+     * Zero-dependencies, Smooth iOS Transitions, Local Storage i18n
+     */
+
+    // --- Smooth Tween Engine for Number Updating ---
+    function tweenValue(start, end, duration, callback) {
+      if (start === end) {
+        callback(end);
+        return;
+      }
+      const startTime = performance.now();
+      const update = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 4); // easeOutQuart
+        const current = start + (end - start) * ease;
+        callback(current);
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          callback(end);
+        }
+      };
+      requestAnimationFrame(update);
+    }
+
+    // --- Multi-language i18n Dictionary ---
+    const translations = {
+      "zh-CN": {
+        ready: "就绪", running: "运行中", paused: "已暂停", completed: "已完成", error: "错误", stopped: "已停止",
+        localMode: "本地模式", taskConfig: "任务配置", taskConfigSub: "TRON Base58 靓号匹配",
+        matchMode: "匹配方式", modeSpecific: "指定字符", modeRepeat: "连续字符",
+        matchPosition: "匹配位置", typePrefix: "前缀", typeSuffix: "后缀", typeBoth: "前缀 + 后缀",
+        prefixLabel: "前缀（T 后）", suffixLabel: "后缀（地址末尾）",
+        repeatPrefixLabel: "前缀连续长度", repeatSuffixLabel: "后缀连续长度", anyChar: "任意字符",
+        targetCount: "生成数量", searchSpace: "搜索空间", est50Time: "50% 命中时间", est90Time: "90% 命中时间",
+        patternPreview: "地址预览", btnStart: "开始搜索", btnPause: "暂停", btnResume: "继续",
+        btnStop: "停止", btnReset: "新建任务", computeDevices: "计算设备", 
+        devicesSummary: "{enabled} / {total} 已启用", hashrate: "算力", load: "负载", temp: "温度", 
+        power: "功耗", vram: "显存", sharedSystem: "共享内存", engineTelemetry: "引擎状态", 
+        sampling: "采样频率：1000ms", totalHashrate: "总算力", checkedKeys: "已搜索", 
+        elapsedTime: "运行时间", matchesFound: "已找到", averageSpeed: "平均算力", 
+        prob50: "50% 命中概率", prob90: "90% 命中概率", prob95: "95% 命中概率", 
+        rtHashrateTitle: "实时算力（最近 60 秒）", chartTotal: "总计", foundAddressesTitle: "已找到地址", 
+        addressesCount: "{count} 个地址", 
+        securityNotice: "私钥安全：私钥仅由本地 C++ 引擎生成并保存，Web 控制台不会读取、传输或显示任何私钥，仅管理和展示公开地址。", 
+        emptyState: "暂未找到靓号。请在上方配置并启动任务。", foundAt: "找到时间", cpuVerified: "CPU 验证通过", 
+        savedLocally: "已保存到本地", copyAddress: "复制地址", copied: "已复制！", 
+        stopModalTitle: "停止搜索任务？", 
+        stopModalDesc: "确定要停止当前生成任务吗？计算核心将立即挂起，GPU 资源将被释放。已找到的地址均已安全保存在本地磁盘中。", 
+        btnCancel: "取消", btnConfirmStop: "停止任务", toastCompleted: "搜索任务已完成！已找到所有目标地址。", 
+        toastMatched: "匹配到靓号：", toastCopied: "地址已复制到剪贴板", 
+        invalidBase58: "包含无效的 Base58 字符: {chars}", 
+        toastStartSuccess: "搜索任务已成功启动。", 
+        toastTaskPaused: "任务已暂停，计算核心挂起。", toastTaskResumed: "任务已恢复运行。", toastTaskStopped: "用户已停止任务。"
+      },
+      "en-US": {
+        ready: "Ready", running: "Running", paused: "Paused", completed: "Completed", error: "Error", stopped: "Stopped",
+        localMode: "Local", taskConfig: "Task Config", taskConfigSub: "TRON Base58 Vanity Matcher",
+        matchMode: "Match Mode", modeSpecific: "Specific Chars", modeRepeat: "Repeating Chars",
+        matchPosition: "Match Position", typePrefix: "Prefix", typeSuffix: "Suffix", typeBoth: "Prefix + Suffix",
+        prefixLabel: "Prefix (After T)", suffixLabel: "Suffix (End)",
+        repeatPrefixLabel: "Prefix Repeat Length", repeatSuffixLabel: "Suffix Repeat Length", anyChar: "Any Char",
+        targetCount: "Target Count", searchSpace: "Search Space", est50Time: "Est. 50% Time", est90Time: "Est. 90% Time",
+        patternPreview: "Pattern Preview", btnStart: "Start Search", btnPause: "Pause", btnResume: "Resume",
+        btnStop: "Stop", btnReset: "New Task", computeDevices: "Compute Devices", 
+        devicesSummary: "{enabled} of {total} enabled", hashrate: "Hashrate", load: "Load", temp: "Temp", 
+        power: "Power", vram: "VRAM", sharedSystem: "Shared / System", engineTelemetry: "Engine Telemetry", 
+        sampling: "SAMPLING: 1000ms", totalHashrate: "Total Hashrate", checkedKeys: "Checked Keys", 
+        elapsedTime: "Elapsed Time", matchesFound: "Matches Found", averageSpeed: "Avg. Speed", 
+        prob50: "50% Probability", prob90: "90% Probability", prob95: "95% Probability", 
+        rtHashrateTitle: "Real-Time Hashrate (Last 60s)", chartTotal: "Total", foundAddressesTitle: "Found Addresses", 
+        addressesCount: "{count} Addresses", 
+        securityNotice: "Zero-Knowledge Security: Private keys are solely generated and stored by the local C++ engine. The Web Dashboard only manages and displays public addresses.", 
+        emptyState: "No vanity addresses found yet. Start the search task above to begin GPU generation.", foundAt: "Found at", cpuVerified: "CPU Verified", 
+        savedLocally: "Saved Locally", copyAddress: "Copy Address", copied: "Copied!", 
+        stopModalTitle: "Stop Search Task?", 
+        stopModalDesc: "Are you sure you want to stop the current generation session? Compute kernels will halt and GPU resources will be released immediately.", 
+        btnCancel: "Cancel", btnConfirmStop: "Stop Task", toastCompleted: "Search Task Completed!", 
+        toastMatched: "Matched Vanity Address: ", toastCopied: "Address copied to clipboard", 
+        invalidBase58: "Invalid Base58 chars: {chars}", 
+        toastStartSuccess: "Search task initialized successfully.", 
+        toastTaskPaused: "Task paused. Kernels idled.", toastTaskResumed: "Task resumed.", toastTaskStopped: "Task stopped by user."
+      },
+      "ja-JP": {
+        ready: "待機中", running: "実行中", paused: "一時停止", completed: "完了", error: "エラー", stopped: "停止済み",
+        localMode: "ローカル", taskConfig: "タスク設定", taskConfigSub: "TRON Base58 アドレス照合",
+        matchMode: "マッチモード", modeSpecific: "指定文字", modeRepeat: "連続文字",
+        matchPosition: "マッチ位置", typePrefix: "プレフィックス", typeSuffix: "サフィックス", typeBoth: "両方",
+        prefixLabel: "プレフィックス（Tの後）", suffixLabel: "サフィックス（末尾）",
+        repeatPrefixLabel: "プレフィックス連続長", repeatSuffixLabel: "サフィックス連続長", anyChar: "任意の文字",
+        targetCount: "生成数", searchSpace: "検索スペース", est50Time: "50% 到達予想時間", est90Time: "90% 到達予想時間",
+        patternPreview: "アドレスプレビュー", btnStart: "検索開始", btnPause: "一時停止", btnResume: "再開",
+        btnStop: "停止", btnReset: "新規タスク", computeDevices: "計算デバイス", 
+        devicesSummary: "{total} 中 {enabled} 有効", hashrate: "ハッシュレート", load: "負荷", temp: "温度", 
+        power: "電力", vram: "VRAM", sharedSystem: "共有メモリ", engineTelemetry: "エンジン状態", 
+        sampling: "サンプリング：1000ms", totalHashrate: "合計ハッシュレート", checkedKeys: "検索済みキー", 
+        elapsedTime: "経過時間", matchesFound: "発見数", averageSpeed: "平均速度", 
+        prob50: "50% の確率", prob90: "90% の確率", prob95: "95% の確率", 
+        rtHashrateTitle: "リアルタイムハッシュレート (過去60秒)", chartTotal: "合計", foundAddressesTitle: "発見されたアドレス", 
+        addressesCount: "{count} 件のアドレス", 
+        securityNotice: "秘密鍵の安全性：秘密鍵はローカルのC++エンジンでのみ生成・保存されます。Webコンソールは公開アドレスのみを管理します。", 
+        emptyState: "まだアドレスは見つかっていません。上記からタスクを開始してください。", foundAt: "発見時刻", cpuVerified: "CPU 検証済み", 
+        savedLocally: "ローカル保存済み", copyAddress: "アドレスをコピー", copied: "コピーしました！", 
+        stopModalTitle: "タスクを停止しますか？", 
+        stopModalDesc: "現在の生成を停止してもよろしいですか？計算カーネルは停止し、GPUリソースは直ちに解放されます。", 
+        btnCancel: "キャンセル", btnConfirmStop: "タスクを停止", toastCompleted: "タスク完了！", 
+        toastMatched: "一致したアドレス：", toastCopied: "クリップボードにコピーしました", 
+        invalidBase58: "無効なBase58文字: {chars}", 
+        toastStartSuccess: "検索タスクを開始しました。", 
+        toastTaskPaused: "タスクを一時停止しました。", toastTaskResumed: "タスクを再開しました。", toastTaskStopped: "タスクを停止しました。"
+      },
+      "de-DE": {
+        ready: "Bereit", running: "Läuft", paused: "Pausiert", completed: "Abgeschlossen", error: "Fehler", stopped: "Gestoppt",
+        localMode: "Lokal", taskConfig: "Aufgabenkonfiguration", taskConfigSub: "TRON Base58 Vanity Matcher",
+        matchMode: "Suchmodus", modeSpecific: "Spezifische Zeichen", modeRepeat: "Wiederholende Zeichen",
+        matchPosition: "Position", typePrefix: "Präfix", typeSuffix: "Suffix", typeBoth: "Präfix + Suffix",
+        prefixLabel: "Präfix (Nach T)", suffixLabel: "Suffix (Ende)",
+        repeatPrefixLabel: "Präfix-Wiederholungslänge", repeatSuffixLabel: "Suffix-Wiederholungslänge", anyChar: "Beliebig",
+        targetCount: "Zielanzahl", searchSpace: "Suchraum", est50Time: "Geschätzte 50% Zeit", est90Time: "Geschätzte 90% Zeit",
+        patternPreview: "Mustervorschau", btnStart: "Suche starten", btnPause: "Pausieren", btnResume: "Fortsetzen",
+        btnStop: "Stoppen", btnReset: "Neue Aufgabe", computeDevices: "Rechengeräte", 
+        devicesSummary: "{enabled} von {total} aktiviert", hashrate: "Hashrate", load: "Auslastung", temp: "Temp", 
+        power: "Strom", vram: "VRAM", sharedSystem: "Geteilt / System", engineTelemetry: "Engine-Telemetrie", 
+        sampling: "ABTASTUNG: 1000ms", totalHashrate: "Gesamte Hashrate", checkedKeys: "Geprüfte Schlüssel", 
+        elapsedTime: "Verstrichene Zeit", matchesFound: "Gefundene Treffer", averageSpeed: "Durschn. Geschw.", 
+        prob50: "50% Wahrsch.", prob90: "90% Wahrsch.", prob95: "95% Wahrsch.", 
+        rtHashrateTitle: "Echtzeit-Hashrate (Letzte 60s)", chartTotal: "Gesamt", foundAddressesTitle: "Gefundene Adressen", 
+        addressesCount: "{count} Adressen", 
+        securityNotice: "Private-Key-Sicherheit: Private Schlüssel werden nur von der lokalen C++ Engine generiert. Das Dashboard verwaltet nur öffentliche Adressen.", 
+        emptyState: "Bisher keine Adressen gefunden. Starten Sie die Suche oben.", foundAt: "Gefunden um", cpuVerified: "CPU-Verifiziert", 
+        savedLocally: "Lokal gespeichert", copyAddress: "Kopieren", copied: "Kopiert!", 
+        stopModalTitle: "Suchaufgabe stoppen?", 
+        stopModalDesc: "Generierung wirklich stoppen? Rechenkerne werden angehalten und Ressourcen sofort freigegeben.", 
+        btnCancel: "Abbrechen", btnConfirmStop: "Stoppen", toastCompleted: "Suchaufgabe abgeschlossen!", 
+        toastMatched: "Treffer: ", toastCopied: "Adresse kopiert", 
+        invalidBase58: "Ungültige Base58-Zeichen: {chars}", 
+        toastStartSuccess: "Suche erfolgreich initialisiert.", 
+        toastTaskPaused: "Aufgabe pausiert.", toastTaskResumed: "Aufgabe fortgesetzt.", toastTaskStopped: "Aufgabe gestoppt."
+      },
+      "ko-KR": {
+        ready: "준비됨", running: "실행 중", paused: "일시 정지됨", completed: "완료됨", error: "오류", stopped: "중지됨",
+        localMode: "로컬", taskConfig: "작업 설정", taskConfigSub: "TRON Base58 배니티 매처",
+        matchMode: "매칭 모드", modeSpecific: "특정 문자", modeRepeat: "연속 문자",
+        matchPosition: "매칭 위치", typePrefix: "접두사", typeSuffix: "접미사", typeBoth: "접두사 + 접미사",
+        prefixLabel: "접두사 (T 이후)", suffixLabel: "접미사 (끝)",
+        repeatPrefixLabel: "접두사 연속 길이", repeatSuffixLabel: "접미사 연속 길이", anyChar: "임의 문자",
+        targetCount: "생성 수량", searchSpace: "검색 공간", est50Time: "50% 예상 시간", est90Time: "90% 예상 시간",
+        patternPreview: "주소 미리보기", btnStart: "검색 시작", btnPause: "일시 정지", btnResume: "계속",
+        btnStop: "중지", btnReset: "새 작업", computeDevices: "컴퓨팅 장치", 
+        devicesSummary: "{total}개 중 {enabled}개 활성화됨", hashrate: "해시레이트", load: "부하", temp: "온도", 
+        power: "전력", vram: "VRAM", sharedSystem: "공유 메모리", engineTelemetry: "엔진 상태", 
+        sampling: "샘플링: 1000ms", totalHashrate: "총 해시레이트", checkedKeys: "검색된 키", 
+        elapsedTime: "경과 시간", matchesFound: "발견된 주소", averageSpeed: "평균 속도", 
+        prob50: "50% 확률", prob90: "90% 확률", prob95: "95% 확률", 
+        rtHashrateTitle: "실시간 해시레이트 (최근 60초)", chartTotal: "총계", foundAddressesTitle: "찾은 주소", 
+        addressesCount: "{count}개 주소", 
+        securityNotice: "프라이빗 키 보안: 프라이빗 키는 로컬 C++ 엔진에서만 생성됩니다. 웹 대시보드는 공개 주소만 표시합니다.", 
+        emptyState: "아직 주소를 찾지 못했습니다. 위에서 검색을 시작하십시오.", foundAt: "발견 시간", cpuVerified: "CPU 검증됨", 
+        savedLocally: "로컬에 저장됨", copyAddress: "주소 복사", copied: "복사됨!", 
+        stopModalTitle: "검색을 중지하시겠습니까?", 
+        stopModalDesc: "현재 생성을 중지하시겠습니까? GPU 리소스가 즉시 해제됩니다.", 
+        btnCancel: "취소", btnConfirmStop: "작업 중지", toastCompleted: "검색 작업 완료!", 
+        toastMatched: "배니티 주소 일치: ", toastCopied: "클립보드에 복사되었습니다.", 
+        invalidBase58: "유효하지 않은 Base58 문자: {chars}", 
+        toastStartSuccess: "검색 작업이 시작되었습니다.", 
+        toastTaskPaused: "작업이 일시 정지되었습니다.", toastTaskResumed: "작업이 재개되었습니다.", toastTaskStopped: "작업이 중지되었습니다."
+      }
+    };
+
+    let currentLang = localStorage.getItem('tronvanity.language') || 'zh-CN';
+    
+    function t(key, params = {}) {
+      let text = translations[currentLang]?.[key] || translations['zh-CN']?.[key] || key;
+      for (const [k, v] of Object.entries(params)) {
+        text = text.replace(`{${k}}`, v);
+      }
+      return text;
+    }
+
+    const BASE58_CHARS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+    const BASE58_SET = new Set(BASE58_CHARS.split(""));
+
+    function formatHashrate(rate) {
+      if (!rate || rate <= 0) return { val: "0.00", unit: "MKeys/s" };
+      if (rate >= 1e12) return { val: (rate / 1e12).toFixed(2), unit: "TKeys/s" };
+      if (rate >= 1e9)  return { val: (rate / 1e9).toFixed(2), unit: "GKeys/s" };
+      if (rate >= 1e6)  return { val: (rate / 1e6).toFixed(2), unit: "MKeys/s" };
+      if (rate >= 1e3)  return { val: (rate / 1e3).toFixed(2), unit: "KKeys/s" };
+      return { val: rate.toFixed(1), unit: "Keys/s" };
+    }
+
+    function formatCheckedCount(count) {
+      if (count >= 1e12) return (count / 1e12).toFixed(3) + " T";
+      if (count >= 1e9)  return (count / 1e9).toFixed(3) + " B";
+      if (count >= 1e6)  return (count / 1e6).toFixed(2) + " M";
+      if (count >= 1e3)  return (count / 1e3).toFixed(1) + " K";
+      return count.toLocaleString();
+    }
+
+    function formatDuration(seconds) {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = Math.floor(seconds % 60);
+      return [
+        h.toString().padStart(2, "0"),
+        m.toString().padStart(2, "0"),
+        s.toString().padStart(2, "0")
+      ].join(":");
+    }
+
+    function formatEtaHuman(sec) {
+      if (!isFinite(sec) || sec <= 0) return "< 1s";
+      if (sec < 60) return `${Math.round(sec)}s`;
+      if (sec < 3600) {
+        const m = Math.floor(sec / 60);
+        const s = Math.round(sec % 60);
+        return `${m}m ${s}s`;
+      }
+      if (sec < 86400) {
+        const h = Math.floor(sec / 3600);
+        const m = Math.round((sec % 3600) / 60);
+        return `${h}h ${m}m`;
+      }
+      const d = Math.floor(sec / 86400);
+      const h = Math.round((sec % 86400) / 3600);
+      return `${d}d ${h}h`;
+    }
+
+    function showToast(message, type = "info") {
+      const container = document.getElementById("toastContainer");
+      if (!container) return;
+      const toast = document.createElement("div");
+      toast.className = "toast mono";
+      toast.style.borderColor = type === "error" ? "var(--accent-rose)" : (type === "success" ? "var(--accent-emerald)" : "var(--border-default)");
+      const marker = document.createElement("span");
+      marker.style.color = type === "error" ? "var(--accent-rose)" : (type === "success" ? "var(--accent-emerald)" : "var(--accent-cyan)");
+      marker.textContent = "●";
+      const text = document.createElement("span");
+      text.style.fontFamily = "var(--font-sans)";
+      text.textContent = String(message);
+      toast.append(marker, text);
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(20px)";
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[character]);
+    }
+
+    // ==========================================================================
+    // Local C++ Engine Client — public data only; private keys never enter JS.
+    // ==========================================================================
+    class LocalEngineClient {
+      constructor() {
+        this.listeners = [];
+        this.devices = [];
+        this.latestSnapshot = {
+          status: "READY", elapsed: 0, checked: 0, totalHashrate: 0,
+          devices: [], foundResults: [],
+          task: { matchMode: "specific", matchPosition: "suffix", specificPrefix: "", specificSuffix: "8888", repeatPrefixLen: 5, repeatSuffixLen: 5, targetCount: 5 }
+        };
+        this.connect();
+      }
+
+      async request(path, method = "GET", body = null) {
+        const options = { method, cache: "no-store", headers: {} };
+        if (body !== null) {
+          options.headers["Content-Type"] = "application/json";
+          options.body = JSON.stringify(body);
+        }
+        const response = await fetch(path, options);
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || `Local Engine HTTP ${response.status}`);
+        this.applySnapshot(payload);
+        return payload;
+      }
+
+      applySnapshot(snapshot) {
+        if (!snapshot || !Array.isArray(snapshot.devices) || !Array.isArray(snapshot.foundResults)) return;
+        this.latestSnapshot = snapshot;
+        this.devices = snapshot.devices;
+        this.listeners.forEach(callback => callback(snapshot));
+      }
+
+      async connect() {
+        try { await this.request("/api/status"); }
+        catch (error) { console.error("Local Engine status unavailable", error); }
+        const events = new EventSource("/api/events");
+        events.onmessage = event => {
+          try { this.applySnapshot(JSON.parse(event.data)); }
+          catch (error) { console.error("Invalid Local Engine event", error); }
+        };
+        events.onerror = () => console.warn("Local Engine event stream reconnecting");
+        this.events = events;
+      }
+
+      async setDeviceEnabled(deviceId, enabled) {
+        return this.request("/api/devices/config", "POST", { id: deviceId, enabled });
+      }
+      async startTask(config) { return this.request("/api/task/start", "POST", config); }
+      async pauseTask() { return this.request("/api/task/pause", "POST", {}); }
+      async resumeTask() { return this.request("/api/task/resume", "POST", {}); }
+      async stopTask() { return this.request("/api/task/stop", "POST", {}); }
+      async resetTask() { return this.request("/api/task/reset", "POST", {}); }
+
+      subscribeStats(callback) {
+        this.listeners.push(callback);
+        callback(this.latestSnapshot);
+        return () => { this.listeners = this.listeners.filter(item => item !== callback); };
+      }
+
+      getSnapshot() { return this.latestSnapshot; }
+    }
+    const engine = new LocalEngineClient();
+
+    // ==========================================================================
+    // Real-Time Chart Implementation
+    // ==========================================================================
+    class HashrateChart {
+      constructor(canvasId, legendContainerId) {
+        this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
+        this.ctx = this.canvas.getContext("2d");
+        this.legendContainer = document.getElementById(legendContainerId);
+        this.maxDataPoints = 60;
+        this.seriesVisibility = { total: true, "cuda-0": true, "opencl-0": false, "cpu-0": false };
+        this.seriesColors = { total: "#00d8ff", "cuda-0": "#76b900", "opencl-0": "#0090d0", "cpu-0": "#a78bfa" };
+        this.history = [];
+        for (let i = 0; i < this.maxDataPoints; i++) this.history.push({ total: 0 });
+        this.resize();
+        window.addEventListener("resize", () => this.resize());
+      }
+      resize() {
+        if (!this.canvas || !this.canvas.parentElement) return;
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = rect.width * window.devicePixelRatio;
+        this.canvas.height = rect.height * window.devicePixelRatio;
+        this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        this.width = rect.width; this.height = rect.height;
+        this.render();
+      }
+      updateLegend(devices) {
+        if (!this.legendContainer) return;
+        this.legendContainer.innerHTML = "";
+        const totalItem = document.createElement("div");
+        totalItem.className = `legend-item ${this.seriesVisibility.total ? "active" : ""}`;
+        totalItem.innerHTML = `<span class="legend-color-dot" style="background: ${this.seriesColors.total};"></span> <span data-i18n="chartTotal">${t('chartTotal')}</span>`;
+        totalItem.onclick = () => { this.seriesVisibility.total = !this.seriesVisibility.total; totalItem.classList.toggle("active", this.seriesVisibility.total); this.render(); };
+        this.legendContainer.appendChild(totalItem);
+
+        devices.forEach(dev => {
+          const item = document.createElement("div");
+          const isVisible = !!this.seriesVisibility[dev.id];
+          item.className = `legend-item ${isVisible ? "active" : ""}`;
+          item.innerHTML = `<span class="legend-color-dot" style="background: ${this.seriesColors[dev.id] || "#fff"};"></span> ${escapeHtml(dev.backend)}`;
+          item.onclick = () => { this.seriesVisibility[dev.id] = !this.seriesVisibility[dev.id]; item.classList.toggle("active", this.seriesVisibility[dev.id]); this.render(); };
+          this.legendContainer.appendChild(item);
+        });
+      }
+      pushSample(sample) {
+        this.history.push(sample);
+        if (this.history.length > this.maxDataPoints) this.history.shift();
+        this.render();
+      }
+      render() {
+        if (!this.width || !this.height) return;
+        const ctx = this.ctx; ctx.clearRect(0, 0, this.width, this.height);
+        const padding = { top: 16, right: 16, bottom: 24, left: 56 };
+        const chartW = this.width - padding.left - padding.right, chartH = this.height - padding.top - padding.bottom;
+        let maxY = 1000000;
+        this.history.forEach(pt => {
+          if (this.seriesVisibility.total && pt.total > maxY) maxY = pt.total;
+          Object.keys(pt).forEach(k => { if (this.seriesVisibility[k] && pt[k] > maxY) maxY = pt[k]; });
+        });
+        maxY = maxY * 1.15;
+        const gridLines = 4;
+        ctx.font = "10px ui-monospace, SF Mono, Menlo, monospace"; ctx.fillStyle = "#525c6e"; ctx.textAlign = "right"; ctx.textBaseline = "middle";
+        for (let i = 0; i <= gridLines; i++) {
+          const yVal = (maxY / gridLines) * i, yPos = padding.top + chartH - (i / gridLines) * chartH;
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.05)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(padding.left, yPos); ctx.lineTo(this.width - padding.right, yPos); ctx.stroke();
+          const fmt = formatHashrate(yVal); ctx.fillText(`${fmt.val} ${fmt.unit.split("/")[0]}`, padding.left - 8, yPos);
+        }
+        ctx.textAlign = "center"; ctx.textBaseline = "top";
+        ctx.fillText("-60s", padding.left, this.height - padding.bottom + 6);
+        ctx.fillText("-30s", padding.left + chartW / 2, this.height - padding.bottom + 6);
+        ctx.fillText("Now", padding.left + chartW, this.height - padding.bottom + 6);
+
+        const stepX = chartW / (this.maxDataPoints - 1);
+        const drawLine = (key, color, isFilled = false) => {
+          if (!this.seriesVisibility[key]) return;
+          ctx.beginPath();
+          this.history.forEach((pt, idx) => {
+            const val = pt[key] || 0, x = padding.left + idx * stepX, y = padding.top + chartH - (val / maxY) * chartH;
+            if (idx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          });
+          ctx.strokeStyle = color; ctx.lineWidth = key === "total" ? 2 : 1.5; ctx.stroke();
+          if (isFilled) {
+            ctx.lineTo(padding.left + chartW, padding.top + chartH); ctx.lineTo(padding.left, padding.top + chartH); ctx.closePath();
+            const grad = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartH);
+            grad.addColorStop(0, "rgba(0, 216, 255, 0.15)"); grad.addColorStop(1, "rgba(0, 216, 255, 0.0)");
+            ctx.fillStyle = grad; ctx.fill();
+          }
+        };
+        Object.keys(this.seriesColors).forEach(k => { if (k !== "total") drawLine(k, this.seriesColors[k], false); });
+        drawLine("total", this.seriesColors.total, true);
+      }
+    }
+
+    // ==========================================================================
+    // Controller Initialization
+    // ==========================================================================
+    document.addEventListener("DOMContentLoaded", () => {
+      let currentMatchMode = "specific";
+      let currentMatchPosition = "suffix";
+      let repeatPrefixLen = 5;
+      let repeatSuffixLen = 5;
+      let latestSnapshot = null;
+      let chart;
+
+      const appStatusBadge = document.getElementById("appStatusBadge");
+      const appStatusText = document.getElementById("appStatusText");
+
+      // UI Form Logic
+      function validateBase58Input(inputElem, wrapperElem, errorElem) {
+        const val = inputElem.value;
+        const invalidChars = [];
+        for (let char of val) { if (!BASE58_SET.has(char) && !invalidChars.includes(char)) invalidChars.push(char); }
+        if (invalidChars.length > 0) {
+          wrapperElem.classList.add("error");
+          errorElem.textContent = t('invalidBase58', { chars: invalidChars.join(", ") });
+          errorElem.classList.add("visible");
+          return false;
+        }
+        wrapperElem.classList.remove("error"); errorElem.classList.remove("visible"); return true;
+      }
+
+      function updateFormVisibility() {
+        const showSpPref = currentMatchMode === 'specific' && (currentMatchPosition === 'prefix' || currentMatchPosition === 'both');
+        const showSpSuff = currentMatchMode === 'specific' && (currentMatchPosition === 'suffix' || currentMatchPosition === 'both');
+        const showRpPref = currentMatchMode === 'repeat' && (currentMatchPosition === 'prefix' || currentMatchPosition === 'both');
+        const showRpSuff = currentMatchMode === 'repeat' && (currentMatchPosition === 'suffix' || currentMatchPosition === 'both');
+
+        document.getElementById("grpSpecificPrefix").classList.toggle("active", showSpPref);
+        document.getElementById("grpSpecificSuffix").classList.toggle("active", showSpSuff);
+        document.getElementById("grpRepeatPrefix").classList.toggle("active", showRpPref);
+        document.getElementById("grpRepeatSuffix").classList.toggle("active", showRpSuff);
+
+        updateEstimation();
+      }
+
+      function updateEstimation() {
+        let combinations = 1;
+        let previewStr = "T";
+
+        if (currentMatchMode === 'specific') {
+          const pre = (currentMatchPosition === 'prefix' || currentMatchPosition === 'both') ? document.getElementById("inputPrefix").value.trim() : "";
+          const suf = (currentMatchPosition === 'suffix' || currentMatchPosition === 'both') ? document.getElementById("inputSuffix").value.trim() : "";
+          previewStr += `${pre}...${suf}`;
+          combinations = Math.pow(58, pre.length + suf.length);
+          if (pre.length + suf.length === 0) combinations = 1;
+        } else {
+          let preDesc = "", sufDesc = "", pLen = 0, sLen = 0;
+          if (currentMatchPosition === 'prefix' || currentMatchPosition === 'both') {
+            preDesc = `[${"A".repeat(repeatPrefixLen)}]`; pLen = Math.max(1, repeatPrefixLen - 1);
+          }
+          if (currentMatchPosition === 'suffix' || currentMatchPosition === 'both') {
+            sufDesc = `[${"B".repeat(repeatSuffixLen)}]`; sLen = Math.max(1, repeatSuffixLen - 1);
+          }
+          previewStr += `${preDesc}...${sufDesc}`;
+          combinations = Math.pow(58, pLen + sLen);
+        }
+
+        document.getElementById("estPreview").textContent = previewStr;
+        
+        if (combinations === 1) {
+          document.getElementById("estSearchSpace").textContent = "1";
+          document.getElementById("est50Time").textContent = "< 1s"; document.getElementById("est90Time").textContent = "< 1s";
+          document.getElementById("prob50Val").textContent = "< 1s"; document.getElementById("prob90Val").textContent = "< 1s"; document.getElementById("prob95Val").textContent = "< 1s";
+          return;
+        }
+        
+        document.getElementById("estSearchSpace").textContent = formatCheckedCount(combinations);
+
+        let totalActiveHash = 0;
+        (latestSnapshot || engine.getSnapshot()).devices.forEach(d => { if (d.enabled) totalActiveHash += d.baseHashrate; });
+        if (totalActiveHash > 0) {
+          const sec50 = (Math.LN2 * combinations) / totalActiveHash;
+          const sec90 = (2.302585 * combinations) / totalActiveHash;
+          const sec95 = (2.995732 * combinations) / totalActiveHash;
+          document.getElementById("est50Time").textContent = formatEtaHuman(sec50); document.getElementById("est90Time").textContent = formatEtaHuman(sec90);
+          document.getElementById("prob50Val").textContent = formatEtaHuman(sec50); document.getElementById("prob90Val").textContent = formatEtaHuman(sec90); document.getElementById("prob95Val").textContent = formatEtaHuman(sec95);
+        } else {
+          document.getElementById("est50Time").textContent = "--"; document.getElementById("est90Time").textContent = "--";
+          document.getElementById("prob50Val").textContent = "--"; document.getElementById("prob90Val").textContent = "--"; document.getElementById("prob95Val").textContent = "--";
+        }
+      }
+
+      // Smooth Segmented Controls Interaction
+      function updateSegmentedControlIndicator(controlId) {
+        const control = document.getElementById(controlId);
+        if (!control) return;
+        const activeBtn = control.querySelector('.sc-btn.active');
+        const indicator = control.querySelector('.sc-indicator');
+        if (activeBtn && indicator) {
+          const btnRect = activeBtn.getBoundingClientRect();
+          const controlRect = control.getBoundingClientRect();
+          indicator.style.transform = `translateX(${btnRect.left - controlRect.left}px)`;
+          indicator.style.width = `${btnRect.width}px`;
+        }
+      }
+
+      document.querySelectorAll('#modeControl .sc-btn').forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll('#modeControl .sc-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentMatchMode = btn.dataset.val;
+          updateSegmentedControlIndicator('modeControl');
+          updateFormVisibility();
+        };
+      });
+
+      document.querySelectorAll('#positionControl .sc-btn').forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll('#positionControl .sc-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentMatchPosition = btn.dataset.val;
+          updateSegmentedControlIndicator('positionControl');
+          updateFormVisibility();
+        };
+      });
+
+      // Bind Field Events
+      document.getElementById("inputPrefix").oninput = (e) => { validateBase58Input(e.target, document.getElementById("prefixWrapper"), document.getElementById("prefixError")); updateEstimation(); };
+      document.getElementById("inputSuffix").oninput = (e) => { validateBase58Input(e.target, document.getElementById("suffixWrapper"), document.getElementById("suffixError")); updateEstimation(); };
+      
+      const inputTargetCount = document.getElementById("inputTargetCount");
+      const targetCountChips = document.querySelectorAll("#targetCountChips .count-chip");
+      inputTargetCount.oninput = () => {
+        const val = parseInt(inputTargetCount.value, 10);
+        targetCountChips.forEach(chip => { chip.classList.toggle("active", parseInt(chip.dataset.count, 10) === val); });
+      };
+      targetCountChips.forEach(chip => {
+        chip.onclick = () => { targetCountChips.forEach(c => c.classList.remove("active")); chip.classList.add("active"); inputTargetCount.value = chip.dataset.count; };
+      });
+
+      document.querySelectorAll("#chipsRepeatPrefix .count-chip").forEach(chip => {
+        chip.onclick = () => {
+          document.querySelectorAll("#chipsRepeatPrefix .count-chip").forEach(c => c.classList.remove("active"));
+          chip.classList.add("active"); repeatPrefixLen = parseInt(chip.dataset.val, 10); updateEstimation();
+        };
+      });
+      document.querySelectorAll("#chipsRepeatSuffix .count-chip").forEach(chip => {
+        chip.onclick = () => {
+          document.querySelectorAll("#chipsRepeatSuffix .count-chip").forEach(c => c.classList.remove("active"));
+          chip.classList.add("active"); repeatSuffixLen = parseInt(chip.dataset.val, 10); updateEstimation();
+        };
+      });
+
+      // UI Text Updater (i18n)
+      function updateUI() {
+        document.documentElement.lang = currentLang;
+        const activeOption = document.querySelector(`.lang-option[data-lang="${currentLang}"]`);
+        if (activeOption) {
+          const currentLangText = document.getElementById('currentLangText');
+          if (currentLangText) currentLangText.textContent = activeOption.textContent;
+          document.querySelectorAll('.lang-option').forEach(opt => opt.classList.remove('active'));
+          activeOption.classList.add('active');
+        }
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (translations[currentLang] && translations[currentLang][key]) el.textContent = translations[currentLang][key];
+        });
+
+        // Recalculate indicators after font rendering changes width
+        setTimeout(() => {
+          updateSegmentedControlIndicator('modeControl');
+          updateSegmentedControlIndicator('positionControl');
+        }, 50);
+
+        if (latestSnapshot) {
+          syncStatusUI(latestSnapshot.status);
+          renderDevices(latestSnapshot.devices);
+          renderResults(latestSnapshot.foundResults);
+          if (chart) chart.updateLegend(latestSnapshot.devices);
+        }
+        updateEstimation();
+      }
+
+      const langBtn = document.getElementById('langBtn');
+      const langDropdown = document.getElementById('langDropdown');
+      langBtn.addEventListener('click', (e) => { e.stopPropagation(); langDropdown.classList.toggle('show'); });
+      document.addEventListener('click', () => { langDropdown.classList.remove('show'); });
+      document.querySelectorAll('.lang-option').forEach(opt => {
+        opt.addEventListener('click', (e) => {
+          const lang = e.target.getAttribute('data-lang');
+          localStorage.setItem('tronvanity.language', lang);
+          currentLang = lang; updateUI();
+        });
+      });
+      window.addEventListener('resize', () => {
+        updateSegmentedControlIndicator('modeControl');
+        updateSegmentedControlIndicator('positionControl');
+      });
+
+      // Actions
+      document.getElementById("btnStart").onclick = async () => {
+        if (currentMatchMode === 'specific') {
+          const isPrefix = (currentMatchPosition === 'prefix' || currentMatchPosition === 'both');
+          const isSuffix = (currentMatchPosition === 'suffix' || currentMatchPosition === 'both');
+          if (isPrefix && !validateBase58Input(document.getElementById("inputPrefix"), document.getElementById("prefixWrapper"), document.getElementById("prefixError"))) return;
+          if (isSuffix && !validateBase58Input(document.getElementById("inputSuffix"), document.getElementById("suffixWrapper"), document.getElementById("suffixError"))) return;
+        }
+        try {
+          await engine.startTask({
+            matchMode: currentMatchMode, matchPosition: currentMatchPosition,
+            specificPrefix: document.getElementById("inputPrefix").value.trim(),
+            specificSuffix: document.getElementById("inputSuffix").value.trim(),
+            repeatPrefixLen, repeatSuffixLen, targetCount: parseInt(document.getElementById("inputTargetCount").value, 10) || 1
+          });
+          showToast(t("toastStartSuccess"), "info");
+        } catch (err) { showToast(err.message, "error"); }
+      };
+
+      const stopConfirmModal = document.getElementById("stopConfirmModal");
+      document.getElementById("btnPause").onclick = async () => { try { await engine.pauseTask(); showToast(t("toastTaskPaused"), "info"); } catch (err) { showToast(err.message, "error"); } };
+      document.getElementById("btnResume").onclick = async () => { try { await engine.resumeTask(); showToast(t("toastTaskResumed"), "info"); } catch (err) { showToast(err.message, "error"); } };
+      document.getElementById("btnStop").onclick = () => stopConfirmModal.classList.add("active");
+      document.getElementById("btnReset").onclick = async () => { try { await engine.resetTask(); } catch (err) { showToast(err.message, "error"); } };
+      document.getElementById("modalBtnCancel").onclick = () => stopConfirmModal.classList.remove("active");
+      document.getElementById("modalBtnConfirmStop").onclick = async () => { stopConfirmModal.classList.remove("active"); try { await engine.stopTask(); showToast(t("toastTaskStopped"), "info"); } catch (err) { showToast(err.message, "error"); } };
+
+      // Render Functions
+      function renderDevices(devices) {
+        const devicesList = document.getElementById("devicesList");
+        devicesList.innerHTML = "";
+        let enabledCount = 0;
+        devices.forEach(dev => {
+          if (dev.enabled) enabledCount++;
+          const card = document.createElement("div");
+          card.className = `device-card ${dev.enabled ? "enabled" : "disabled"}`;
+          const hashrateFmt = formatHashrate(dev.hashrate);
+          const metric = (value, suffix = "") => Number.isFinite(value) ? `${value}${suffix}` : "—";
+          const memoryStr = Number.isFinite(dev.memoryTotal) ? `${metric(dev.memoryUsed)} / ${dev.memoryTotal} GB` : "—";
+          const utilization = dev.enabled ? metric(dev.utilization, "%") : "0%";
+          const temperature = dev.enabled ? metric(dev.temperature, "°C") : "—";
+          const power = dev.enabled ? metric(dev.power, " W") : "—";
+
+          card.innerHTML = `
+            <div class="device-top-row">
+              <div class="device-identity">
+                <span class="device-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>
+                  </svg>
+                </span>
+                <span class="device-name">${escapeHtml(dev.name)}</span>
+                <span class="backend-tag backend-${escapeHtml(dev.backend)}">${escapeHtml(dev.backend)}</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" ${dev.enabled ? "checked" : ""} data-device-id="${escapeHtml(dev.id)}" class="device-toggle" ${latestSnapshot?.status === "RUNNING" ? "disabled" : ""}>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="device-metrics-grid mono">
+              <div class="metric-block">
+                <span class="metric-label">${t('hashrate')}</span>
+                <span class="metric-value hashrate">${hashrateFmt.val} <small style="font-size: 10px; color: var(--text-muted);">${hashrateFmt.unit}</small></span>
+              </div>
+              <div class="metric-block">
+                <span class="metric-label">${t('load')} / ${t('temp')}</span>
+                <span class="metric-value">${utilization} · ${temperature}</span>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" style="width: ${dev.enabled && Number.isFinite(dev.utilization) ? Math.max(0, Math.min(100, dev.utilization)) : 0}%;"></div>
+                </div>
+              </div>
+              <div class="metric-block">
+                <span class="metric-label">${t('power')}</span>
+                <span class="metric-value">${power}</span>
+              </div>
+              <div class="metric-block">
+                <span class="metric-label">${t('vram')}</span>
+                <span class="metric-value" style="font-size: 11px;">${memoryStr}</span>
+              </div>
+            </div>
+          `;
+          devicesList.appendChild(card);
+        });
+        document.getElementById("deviceCountSummary").textContent = t("devicesSummary", { enabled: enabledCount, total: devices.length });
+        document.querySelectorAll(".device-toggle").forEach(chk => { chk.onchange = async (e) => { try { await engine.setDeviceEnabled(e.target.dataset.deviceId, e.target.checked); updateEstimation(); } catch (err) { showToast(err.message, "error"); renderDevices(engine.getSnapshot().devices); } }; });
+      }
+
+      function renderResults(results) {
+        document.getElementById("resultsCountBadge").textContent = t("addressesCount", { count: results.length });
+        const resultsList = document.getElementById("resultsList");
+        const resultsEmpty = document.getElementById("resultsEmpty");
+        
+        if (results.length === 0) {
+          resultsEmpty.style.display = "flex"; document.querySelectorAll(".result-card").forEach(c => c.remove()); return;
+        }
+        resultsEmpty.style.display = "none";
+        document.querySelectorAll(".result-card").forEach(card => card.remove());
+        
+        results.forEach(res => {
+          const card = document.createElement("div");
+          card.className = "result-card";
+          let addrHtml = "";
+          if (res.prefix || res.suffix) {
+            const middle = res.address.slice(1 + (res.prefix?.length || 0), res.address.length - (res.suffix?.length || 0));
+            addrHtml = `<span style="color: var(--text-dim);">T</span><span class="address-highlight">${escapeHtml(res.prefix || "")}</span><span>${escapeHtml(middle)}</span><span class="address-highlight">${escapeHtml(res.suffix || "")}</span>`;
+          } else { addrHtml = escapeHtml(res.address); }
+
+          card.innerHTML = `
+            <div class="result-main">
+              <div class="result-address-row"><span class="address-index mono">#${res.index}</span><span class="address-text mono">${addrHtml}</span></div>
+              <div class="result-meta-row"><span>${t('foundAt')} ${escapeHtml(res.foundAt)}</span><span>•</span><span>${escapeHtml(res.deviceName)} (${escapeHtml(res.backend)})</span><span>•</span><span class="badge-verified">✓ ${t('cpuVerified')}</span><span>•</span><span class="badge-saved">✓ ${t('savedLocally')}</span></div>
+            </div>
+            <button type="button" class="btn-copy mono" data-address="${escapeHtml(res.address)}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>${t('copyAddress')}</span>
+            </button>
+          `;
+          resultsList.appendChild(card);
+        });
+
+        document.querySelectorAll(".btn-copy").forEach(btn => {
+          btn.onclick = (e) => {
+            const targetBtn = e.currentTarget;
+            const el = document.createElement("textarea"); el.value = targetBtn.dataset.address; document.body.appendChild(el); el.select(); document.execCommand("copy"); document.body.removeChild(el);
+            targetBtn.classList.add("copied"); targetBtn.innerHTML = `✓ ${t('copied')}`;
+            setTimeout(() => { targetBtn.classList.remove("copied"); targetBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>${t('copyAddress')}</span>`; }, 2000);
+            showToast(t("toastCopied"), "info");
+          };
+        });
+      }
+
+      function syncStatusUI(status) {
+        appStatusBadge.setAttribute("data-status", status); appStatusText.textContent = t(status.toLowerCase());
+        const isLocked = (status === "RUNNING" || status === "PAUSED");
+        
+        document.getElementById("inputPrefix").disabled = isLocked;
+        document.getElementById("inputSuffix").disabled = isLocked;
+        document.getElementById("inputTargetCount").disabled = isLocked;
+        document.querySelectorAll('.sc-btn, .count-chip').forEach(el => el.style.pointerEvents = isLocked ? "none" : "auto");
+
+        document.getElementById("btnStart").style.display = (status === "READY") ? "inline-flex" : "none";
+        document.getElementById("btnPause").style.display = (status === "RUNNING") ? "inline-flex" : "none";
+        document.getElementById("btnResume").style.display = (status === "PAUSED") ? "inline-flex" : "none";
+        document.getElementById("btnStop").style.display = (status === "RUNNING" || status === "PAUSED") ? "inline-flex" : "none";
+        document.getElementById("btnReset").style.display = (status === "COMPLETED" || status === "ERROR" || status === "STOPPED") ? "inline-flex" : "none";
+      }
+
+      function hydrateTaskForm(task) {
+        if (!task) return;
+        currentMatchMode = task.matchMode === "repeat" ? "repeat" : "specific";
+        currentMatchPosition = ["prefix", "suffix", "both"].includes(task.matchPosition) ? task.matchPosition : "suffix";
+        repeatPrefixLen = Number(task.repeatPrefixLen) || 5;
+        repeatSuffixLen = Number(task.repeatSuffixLen) || 5;
+        document.getElementById("inputPrefix").value = task.specificPrefix || "";
+        document.getElementById("inputSuffix").value = task.specificSuffix || "";
+        document.getElementById("inputTargetCount").value = Number(task.targetCount) || 1;
+        document.querySelectorAll("#modeControl .sc-btn").forEach(button => button.classList.toggle("active", button.dataset.val === currentMatchMode));
+        document.querySelectorAll("#positionControl .sc-btn").forEach(button => button.classList.toggle("active", button.dataset.val === currentMatchPosition));
+        document.querySelectorAll("#chipsRepeatPrefix .count-chip").forEach(button => button.classList.toggle("active", Number(button.dataset.val) === repeatPrefixLen));
+        document.querySelectorAll("#chipsRepeatSuffix .count-chip").forEach(button => button.classList.toggle("active", Number(button.dataset.val) === repeatSuffixLen));
+        document.querySelectorAll("#targetCountChips .count-chip").forEach(button => button.classList.toggle("active", Number(button.dataset.count) === Number(task.targetCount)));
+        updateFormVisibility();
+        updateSegmentedControlIndicator('modeControl');
+        updateSegmentedControlIndicator('positionControl');
+      }
+
+      // Stream Subscription
+      let isFirstSync = true, lastHashrate = 0, lastChecked = 0, hydratedTask = "";
+      chart = new HashrateChart("hashrateCanvas", "chartLegend");
+
+      let previousStatus = "READY";
+      engine.subscribeStats((snap) => {
+        latestSnapshot = snap;
+        if (snap.devices.length) {
+          const taskSignature = JSON.stringify(snap.task || {});
+          if (taskSignature !== hydratedTask) {
+            hydrateTaskForm(snap.task);
+            hydratedTask = taskSignature;
+          }
+        }
+        syncStatusUI(snap.status);
+        if (snap.status === "COMPLETED" && previousStatus !== "COMPLETED") showToast(t("toastCompleted"), "success");
+        previousStatus = snap.status;
+
+        const hudHashrateVal = document.getElementById("hudHashrateVal");
+        if (hudHashrateVal) tweenValue(lastHashrate, snap.totalHashrate, 600, (val) => { const rateFmt = formatHashrate(val); hudHashrateVal.textContent = rateFmt.val; document.getElementById("hudHashrateUnit").textContent = rateFmt.unit; });
+        lastHashrate = snap.totalHashrate;
+
+        const hudCheckedVal = document.getElementById("hudCheckedVal");
+        if (hudCheckedVal) tweenValue(lastChecked, snap.checked, 600, (val) => { hudCheckedVal.textContent = formatCheckedCount(val); });
+        lastChecked = snap.checked;
+
+        document.getElementById("hudElapsedVal").textContent = formatDuration(snap.elapsed);
+        document.getElementById("hudFoundVal").textContent = `${snap.foundResults.length} / ${snap.task.targetCount || 5}`;
+        
+        const hudAvgSpeedVal = document.getElementById("hudAvgSpeedVal");
+        if (snap.elapsed > 0 && snap.checked > 0) {
+          const avgRate = snap.checked / snap.elapsed; const avgFmt = formatHashrate(avgRate); hudAvgSpeedVal.textContent = `${avgFmt.val} ${avgFmt.unit}`;
+        } else { hudAvgSpeedVal.textContent = "--"; }
+
+        if (chart) {
+          const chartSample = { total: snap.totalHashrate };
+          snap.devices.forEach(d => { chartSample[d.id] = d.hashrate; });
+          chart.pushSample(chartSample);
+          if (isFirstSync && snap.devices.length) { chart.updateLegend(snap.devices); isFirstSync = false; }
+        }
+        renderDevices(snap.devices);
+        renderResults(snap.foundResults);
+      });
+
+      // Init
+      updateUI();
+      updateFormVisibility();
+      setTimeout(() => {
+        updateSegmentedControlIndicator('modeControl');
+        updateSegmentedControlIndicator('positionControl');
+      }, 100);
+    });
+  </script>
+</body>
+</html>

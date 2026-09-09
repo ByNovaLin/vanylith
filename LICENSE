@@ -1,0 +1,492 @@
+Vanylith Community Source License 1.0
+
+Copyright © 2026 ByNovaLin
+All rights reserved except as expressly granted under this License.
+
+This is a Community Source / Source Available license. It is not an Open
+Source Initiative (OSI)-approved open source license.
+
+1. Definitions
+
+1.1. "Licensor" means each copyright holder that owns rights in a portion of
+the Software and has authority to offer that portion under this License.
+
+1.2. "You" or "Recipient" means the individual or legal entity exercising
+rights under this License.
+
+1.3. "Software" means the source code, assets, build files, and official
+binary forms in the Vanylith project that are owned by a Licensor and offered
+under this License. Software does not include a Third-Party Component merely
+because that component is stored in the same repository, used to build the
+Software, linked with the Software, or included in a distribution.
+
+1.4. "Source Code" means the human-readable form of the Software that is
+preferred for understanding and making modifications.
+
+1.5. "Modified Version" means a version of the Software produced by modifying,
+extending, replacing, deleting, or adding to Vanylith code or other material
+covered by this License. A separate program that merely communicates with
+Vanylith through ordinary documented interfaces, IPC, HTTP, or other normal
+inter-process mechanisms, without incorporating or modifying the Software, is
+not a Modified Version solely because of that communication.
+
+1.6. "Distribution" means providing a copy of the Software or a Modified
+Version, in source or binary form, to any person or entity outside Your
+Internal Use group, whether publicly or to selected recipients. Distribution
+includes providing a ZIP file, installer, executable, package, fork, download,
+or other copy. Access permitted as Internal Use under Section 3 is not
+Distribution.
+
+1.7. "Internal Use" means use by an individual for that individual's own
+purposes, or use by a company, school, laboratory, team, or other organization
+for its own internal purposes. An organization may permit its employees,
+officers, directors, contractors, and consultants to access and use the
+Software solely on its behalf and for those internal purposes. Each contractor
+or consultant must be subject to reasonable confidentiality, contractual, or
+similar obligations and receives no independent right, from that access, to
+use the Software for other clients or to distribute or commercialize it. Bona
+fide payment for that employee's, contractor's, or consultant's work does not
+remove the work from Internal Use when all of these conditions are met and the
+Software or Modified Version is not distributed outside the organization and
+its Internal Use group.
+
+1.8. "Hosted Service" means a website, API, bot, server, remote interface,
+managed system, network service, or similar arrangement through which an
+external third party can directly use the Software, or the core vanity-address-
+generation functionality implemented by or derived from the Software, without
+necessarily receiving a copy of its source code or binary.
+
+1.9. "Consideration" means direct or indirect economic value connected in
+substance to the relevant software, service, functionality, result, access, or
+traffic. It includes money, fiat currency, cryptocurrency, a subscription or
+membership fee, credits, points, tokens, prepaid balance, a required purchase,
+a bundle purchase, paid-group access, payment for access, download, entitlement,
+quota, or priority, and advertising revenue, affiliate revenue, paid sponsor or
+promotional placement, revenue sharing, referral commissions, or other
+commercial traffic monetization materially connected to a Hosted Service or
+its use. The label placed on a charge does not control. A voluntary,
+unconditional Donation under Section 10 is not Consideration when it provides
+no access or usage benefit and does not purchase Hosted Service traffic,
+advertising, promotion, placement, or referral rights.
+
+1.10. "Commercial Distribution" means Distribution of the Software or a
+Modified Version where providing, obtaining, or accessing the copy or any
+associated download, update, feature, source, binary, package, or entitlement
+is directly or indirectly conditioned on Consideration. Section 8 governs bona
+fide independent services.
+
+1.11. "Commercial Hosted Service" means a Hosted Service that provides the
+Software or its core vanity-address-generation functionality to external third
+parties and is directly or indirectly monetized through Consideration
+materially connected to the Hosted Service or its use or traffic, whether or
+not users themselves are charged. It includes paid or subscription SaaS, paid
+APIs or bots, pay-per-use services, purchased credits, points or tokens,
+generation-for-hire, managed vanity generation, charges based on a result,
+address, compute time, GPU time, attempts, or difficulty, advertising revenue,
+affiliate revenue, paid sponsor or promotional placement, revenue sharing,
+referral commissions, and commercial traffic monetization. A service does not
+cease to be commercial merely because a button or tier is called "free."
+
+1.12. "Corresponding Source" means the Source Code and other source-form
+material that an ordinary developer would reasonably need to understand,
+modify, and rebuild the particular Modified Version. As applicable, it includes
+modified and added source files, patches, build scripts, CMake configuration,
+relevant build configuration, source-level modifications, and required project
+files. It does not include source for an operating system, standard compiler,
+system libraries, or unchanged Third-Party Components.
+
+1.13. "Vanylith Marks" or "Official Marks" means the Vanylith name, official
+logo, official icon, official wordmark, and other official product branding.
+
+1.14. "Third-Party Component" means code, a library, SDK, runtime, asset, or
+other material in which rights are held by someone other than the applicable
+Licensor and that is subject to separate license terms.
+
+1.15. "Donation" means a voluntary and unconditional donation, tip, or
+sponsorship that is not required to obtain or use any software, source, binary,
+download, update, feature, result, priority, quota, special build, or hosted-
+generation entitlement, and that does not purchase advertising, promotional or
+sponsor placement, referrals, traffic, revenue sharing, or other commercial
+rights connected to a Hosted Service. A neutral acknowledgement of support in
+general project materials does not, by itself, prevent a payment from being a
+Donation.
+
+1.16. "Project Steward" means the individual or legal entity that, when the
+Vanylith Contributor License Agreement 1.0 ("VCLA 1.0") first becomes effective
+for Contributions, lawfully operates the GitHub account publicly identified as
+@ByNovaLin and, under that public project identity, administers the official
+Vanylith repository identified as https://github.com/ByNovaLin/vanylith.
+Thereafter, another individual or legal entity becomes the Project Steward only
+through a permitted assignment to a Successor Steward under Section 7 of VCLA
+1.0. Mere control, sale, transfer, compromise, loss, username reassignment, or
+repository technical-control change does not by itself confer Project Steward
+status. The account name is a public identifier and does not represent a
+separate legal entity.
+
+2. Copyright License Grant
+
+Subject to all conditions of this License, each Licensor grants You a
+worldwide, royalty-free, non-exclusive copyright license to use, run, execute,
+copy, inspect, study, research, test, benchmark, profile, audit, and modify the
+Software. This grant expressly permits personal, educational, research,
+security-research, and Internal Use, including Internal Use for commercial and
+production purposes. Rights to distribute the Software or provide a Hosted
+Service exist only as stated in this License.
+
+3. Internal Use and Private Modification
+
+You may make and keep private or closed-source modifications for Your own
+Internal Use. A commercial organization may use the Software and a closed-
+source Modified Version internally, including in production and for its own
+commercial operations, without publishing its modifications. No source-
+disclosure obligation arises solely from Internal Use.
+
+This permission does not allow Distribution of a closed-source Modified
+Version or operation of a Commercial Hosted Service. Contractors and
+consultants may use the Software only within the limits in Section 1.7.
+
+4. Modification
+
+You may create Modified Versions. You do not have to publish a Modified Version
+that remains entirely within Internal Use. If You distribute a Modified
+Version or use one to provide a Hosted Service, Sections 6 and 9 apply.
+
+5. Free Redistribution of Unmodified Official Copies
+
+You may distribute an unmodified official copy of the Software only if all of
+the following conditions are met:
+
+(a) the copy is provided without Consideration;
+
+(b) the official files are not altered;
+
+(c) all copyright notices, this License, NOTICE, and applicable third-party
+notices are retained with the copy;
+
+(d) You do not represent Your mirror, download, or distribution channel as an
+official Vanylith site or release channel, or imply endorsement, approval,
+partnership, sponsorship, affiliation, or authorization by the Licensor; and
+
+(e) You comply with all separate terms governing Third-Party Components.
+
+The Vanylith name, logo, icon, and wordmark already present in an unmodified
+official copy may remain in that copy. This does not grant a right to use the
+Vanylith Marks to brand Your own site, service, or product.
+
+6. Distribution of Modified Versions
+
+Except where a Licensor with sufficient authority gives separate written
+permission, You may distribute a Modified Version only if all of the following
+conditions are met:
+
+(a) no Consideration is charged for the Modified Version itself, including its
+license rights, source and binary forms, packages, installers, downloads,
+updates, and features. This does not prohibit a bona fide independent service
+fee permitted by Section 8;
+
+(b) a usable copy of the portions of the Modified Version consisting of the
+Software and modifications to the Software, together with the complete
+Corresponding Source, is made freely and publicly accessible to the general
+public no later than the first external Distribution of that version. A public
+Git repository or unrestricted direct source archive is sufficient. Access
+limited to a customer, selected recipients, or a private repository is not
+sufficient. Payment, membership, paid accounts, sponsorship, private purchase,
+or similar conditions for access are prohibited. The Corresponding Source must
+remain publicly accessible until the later of (i) three (3) years after the
+last Distribution of that version or (ii) the date You stop making that version
+available;
+
+(c) the portions of the Modified Version consisting of the Software and
+modifications to the Software remain licensed under the Vanylith Community
+Source License 1.0. You may not relicense those portions under MIT, a
+proprietary license, a closed-source license, a commercial-only license, or
+other terms that remove or reduce the requirements of this License;
+
+(d) all applicable copyright notices, this LICENSE, NOTICE, and third-party
+notices are retained;
+
+(e) a prominent modification notice identifies the work as a modified version
+or fork of Vanylith, states that it is not an official Vanylith release, and
+reasonably summarizes the principal modifications; and
+
+(f) the Modified Version uses its own name, logo, icon, and primary identity as
+required by Section 14.
+
+These requirements apply to both public and targeted external Distribution. A
+targeted delivery does not comply merely because the selected recipient
+receives source code; the material described in subsection (b) must also be
+available to the general public. Work performed by an employee, contractor, or
+consultant entirely within an organization's Internal Use under Section 1.7 is
+not external Distribution and does not trigger this section. These requirements
+do not require disclosure of unrelated, independently developed software that
+only communicates with Vanylith through ordinary interfaces and does not
+incorporate or modify the Software. Independently owned, separable components
+may use separate terms, but those terms must not restrict or override the
+rights and obligations applicable to the Software and its modifications.
+
+No contributor or distributor may require a person to disclose a legal name,
+government identifier, or other unnecessary private information as a condition
+of obtaining a publicly offered Modified Version or its Corresponding Source.
+
+7. No Commercial Distribution or Resale
+
+Unless the Licensor gives separate written permission, You may not engage in
+Commercial Distribution. Without limitation, You may not sell or resell the
+Software or a Modified Version; charge for copies, source, binaries, installers,
+packages, downloads, updates, or features; sublicense for a fee; place access
+behind a subscription, membership, paid group, sponsor tier, course purchase,
+or other paywall; offer a paid-only or VIP build; or include the Software as
+value available only through a paid bundle or required purchase.
+
+A charge called an installation fee, service fee, membership fee, donation,
+sponsorship, course fee, or bundle price is prohibited when, in substance,
+payment is required to receive the Software, a Modified Version, a download
+link, source access, an update, a feature, or a license right.
+
+8. Independent Consulting and Technical Services
+
+You may charge for bona fide independent labor and professional services, such
+as consulting, training, deployment or installation assistance, integration,
+configuration, debugging, maintenance, and technical support, provided that:
+
+(a) the customer can lawfully obtain the unmodified Software itself without
+paying You;
+
+(b) the charge is genuinely for independent labor or expertise and is not, in
+substance, a condition or disguised charge for obtaining a copy, download,
+license right, source access, update, feature, or special build;
+
+(c) You do not impose proprietary or closed-source terms on the Software or on
+modifications to the Software; and
+
+(d) when an organization hires You solely to work on its behalf and for its own
+Internal Use, and the conditions in Section 1.7 are met, You may create, access,
+and deliver that organization's private Modified Version within its Internal
+Use group without public source disclosure; and
+
+(e) any other delivery of a Modified Version is external Distribution and must
+comply with Section 6, including general-public availability of the
+Vanylith-covered portions and Corresponding Source. A customer-only source
+delivery is not sufficient.
+
+Fees reasonably attributable to actual labor do not become software license
+fees merely because the work involves Vanylith. However, this section cannot be
+used to disguise Commercial Distribution, including withholding an otherwise
+available executable or download until an "installation" fee is paid, or
+charging multiple customers for delivery of a pre-existing or repeatable
+Modified Version. Proprietary external delivery requires separate written
+permission from a rights holder with sufficient authority.
+
+9. Hosted Services
+
+9.1. Free Hosted Services. You may provide a genuinely free and noncommercial
+Hosted Service using an unmodified copy of the Software if users are not
+required to provide Consideration and the service is not monetized through
+advertising, affiliate or referral revenue, paid sponsor or promotional
+placement, revenue sharing, commercial traffic monetization, paid membership,
+paid quota, paid priority, purchased credits, points or tokens, a required
+purchase, or another Commercial Hosted Service arrangement. The service must
+provide reasonably discoverable attribution to Vanylith, a link to the
+original project, and a link to the Vanylith Community Source License 1.0.
+
+9.2. Modified Free Hosted Services. If a Hosted Service uses a Modified
+Version, the service must also provide, from a clear and reasonably discoverable
+source/license location, free access to the Corresponding Source for the
+version actually used by the service. The Corresponding Source must be
+available no later than the modified functionality and for as long as that
+functionality is offered, and the Vanylith portions and modifications must
+remain under this License.
+
+9.3. Commercial Hosted Services Prohibited. Unless the Licensor gives separate
+written permission, You may not provide a Commercial Hosted Service using the
+Software, a Modified Version, or the core vanity-address-generation
+functionality implemented by or derived from the Software. This prohibition
+applies even if a customer never receives a copy of the Software. It includes
+paid websites, SaaS, APIs, Telegram or Discord bots, remote GPU generation,
+managed generation, generation-for-hire, charging by result or address,
+subscriptions, purchased quota, credits, points or tokens, and charging by
+compute time, GPU hour, attempt, or difficulty. It also includes an otherwise
+free-to-use Hosted Service monetized through advertising, affiliate or referral
+revenue, paid sponsor or promotional placement, revenue sharing, or commercial
+monetization of service traffic.
+
+10. Donations and Sponsorship
+
+You may accept Donations and general project sponsorship that are voluntary,
+unconditional, and unrelated to Hosted Service traffic or promotion. A payment
+is not a Donation if it is required for, or provides preferential or exclusive
+access to, the Software, a Modified Version, source code, a binary, download,
+update, feature, generation result, priority, quota, hosted-generation
+entitlement, or special build, or if it purchases advertising, sponsor or
+promotional placement, referrals, traffic, revenue sharing, or another
+commercial benefit connected to a Hosted Service. A sponsor-only release,
+member-only download, paid CUDA build, or paid placement on a Hosted Service is
+Commercial Distribution or a Commercial Hosted Service, not a Donation. A
+neutral acknowledgement of unconditional support in general project materials
+is permitted and is not paid Hosted Service placement merely because the
+supporter is named.
+
+11. Generated Output
+
+Ordinary output generated through normal use of the Software, including vanity
+addresses, benchmark output, locally generated telemetry, and other normal
+application output, is not treated as Software or a Modified Version merely
+because the Software generated it. This License does not claim ownership of a
+Recipient's wallet address, private key, or other generated result.
+
+This section does not authorize a Commercial Hosted Service or generation-for-
+hire prohibited by Section 9.3.
+
+12. Corresponding Source and Notice Availability
+
+Where this License requires Corresponding Source or notices, they must be
+complete, freely accessible, and obtainable without payment, membership, a
+paid account, purchase, or private transaction. The source must correspond to
+the binary, package, or hosted version being offered; a promise of later source
+availability is insufficient. For a Modified Version that has been externally
+distributed, the Corresponding Source must be publicly available to the general
+public for the period required by Section 6(b), including at least three (3)
+years after the last Distribution of that version when that period ends later.
+
+13. Attribution and Notice Preservation
+
+Every Distribution must reasonably preserve all applicable copyright notices,
+this License, NOTICE, and notices and license texts for Third-Party Components.
+You may add accurate notices for Your own modifications, but may not remove or
+misrepresent existing notices.
+
+14. Vanylith Marks
+
+Copyright permission under this License is separate from trademark and branding
+rights. This License grants no rights in the Vanylith Marks.
+
+You may make truthful nominative references such as "Based on Vanylith," "Fork
+of Vanylith," or "Originally derived from Vanylith," provided they do not imply
+endorsement, approval, partnership, sponsorship, affiliation, or official
+status. Except for branding already contained in an unmodified official copy,
+a Modified Version must not use the official logo or icon as its primary
+application icon, product logo, website logo, or primary branding. It must use
+its own distinct name and identity.
+
+Without separate written permission, a Modified Version may not be branded in
+a way likely to be mistaken for an official product, including names such as
+"Vanylith Pro," "Vanylith Plus," "Vanylith VIP," "Official Vanylith," or
+"Vanylith Enterprise."
+
+15. Third-Party Components
+
+This License applies only to portions of Vanylith for which a Licensor has
+authority to grant rights. Third-Party Components remain subject to their own
+licenses, notices, terms, and conditions. Nothing in this License relicenses,
+supersedes, or expands rights in a Third-Party Component. You must comply with
+the applicable third-party terms, including any source or binary redistribution
+requirements. See THIRD_PARTY_NOTICES.md for the project's current inventory.
+
+16. Contributions
+
+An intentionally submitted Contribution included in Vanylith remains licensed
+to Recipients under the Vanylith Community Source License 1.0, and the
+Contributor retains copyright in the Contribution. A separate Vanylith
+Contributor License Agreement 1.0 (VCLA 1.0) may grant additional,
+non-exclusive copyright and narrowly scoped patent rights to the Project
+Steward, including sublicensing and relicensing rights needed for VCSL and
+separate commercial licensing. Those additional terms do not transfer
+copyright or patent ownership. This License does not supersede, restrict, or
+terminate VCLA 1.0.
+
+17. Compliance and Termination
+
+Your rights under this License terminate automatically when You violate a
+condition of this License.
+
+If this is Your first violation of this License and You fully cure it before
+receiving actual written notice from an affected Licensor, Your rights are
+automatically reinstated effective upon full cure. If You receive actual
+written notice before fully curing that first violation, Your rights are
+automatically reinstated effective upon full cure only if You cure no later
+than thirty (30) days after receiving the notice. A cure must include, as
+applicable, stopping the violation, removing noncompliant distributions or
+access restrictions, providing missing Corresponding Source or notices,
+correcting misuse of the Vanylith Marks, and completing other reasonable
+corrective action necessary to bring the activity into compliance.
+
+Automatic reinstatement is not available for a repeated violation after cure,
+an intentional recurrence of the same or a substantially similar violation, or
+a continuing uncured violation. After such a violation, rights may be restored
+only by the affected Licensor in writing. Termination of Your rights does not
+terminate the rights of recipients who received compliant copies from You and
+remain in compliance themselves.
+
+18. No Implied Rights
+
+No rights are granted by implication, estoppel, conduct, silence, or otherwise
+beyond those expressly granted by this License.
+
+19. Disclaimer of Warranty
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE SOFTWARE IS PROVIDED
+"AS IS" AND "WITH ALL FAULTS," WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED,
+OR STATUTORY, INCLUDING WARRANTIES OF CORRECTNESS, UNINTERRUPTED OR ERROR-FREE
+OPERATION, MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND
+NON-INFRINGEMENT. NO WARRANTY IS MADE THAT THE SOFTWARE OR ANY GENERATED
+ADDRESS, KEY, OR RESULT IS SECURE, CORRECT, SUITABLE FOR CRYPTOCURRENCY OR
+WALLET USE, OR FIT FOR HOLDING OR TRANSFERRING ASSETS.
+
+20. Limitation of Liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, NO LICENSOR, CONTRIBUTOR, OR
+COPYRIGHT HOLDER WILL BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, PUNITIVE, OR CONSEQUENTIAL DAMAGES, OR FOR LOSS OF FUNDS,
+CRYPTOCURRENCY, PRIVATE KEYS, ACCESS TO ASSETS, DATA, PROFITS, REVENUE,
+GOODWILL, OR BUSINESS OPPORTUNITY, BUSINESS INTERRUPTION, COMPROMISED KEYS,
+ADDRESS ERRORS, OR THE COST OF SUBSTITUTE GOODS OR SERVICES, ARISING FROM OR
+RELATED TO THE SOFTWARE OR THIS LICENSE, UNDER ANY THEORY OF LIABILITY, EVEN IF
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+TO THE EXTENT LIABILITY CANNOT LAWFULLY BE EXCLUDED, THE AGGREGATE LIABILITY OF
+EACH LICENSOR, CONTRIBUTOR, OR COPYRIGHT HOLDER UNDER THIS LICENSE WILL NOT
+EXCEED THE AMOUNT, IF ANY, THAT YOU PAID DIRECTLY TO THAT PARTY FOR THE SOFTWARE
+UNDER THIS LICENSE DURING THE TWELVE MONTHS BEFORE THE EVENT GIVING RISE TO THE
+CLAIM. NOTHING IN THIS SECTION EXCLUDES OR LIMITS LIABILITY THAT APPLICABLE LAW
+DOES NOT PERMIT TO BE EXCLUDED OR LIMITED.
+
+21. Security Responsibility
+
+You are responsible for independently verifying generated results, protecting
+private keys and local result files, evaluating whether the Software is
+appropriate for use with real assets, and maintaining appropriate backups.
+
+22. Separate Written Licensing
+
+A person or entity may separately authorize conduct that this License does not
+permit only to the extent that person or entity owns the affected rights or has
+sufficient authority to sublicense or relicense them. Such authorization may
+include paid redistribution, OEM distribution, a Commercial Hosted Service,
+paid API access, or proprietary hosted use, and must be in a separate written
+agreement or written authorization.
+
+The Project Steward may offer separate commercial licensing for the project
+only to the extent it owns the applicable rights or has received sufficient
+sublicensing or relicensing rights under VCLA 1.0, including through a
+permitted successor assignment, or under another valid grant. A Contributor
+cannot authorize the entire Vanylith project merely by owning rights in that
+Contributor's own Contribution. Separate authorization does not change this
+License for other Recipients.
+
+23. Severability
+
+If a provision of this License is held invalid or unenforceable, it will be
+limited or reformed only to the minimum extent necessary, and the remaining
+provisions will remain in effect.
+
+24. No Waiver
+
+A failure or delay by a Licensor in enforcing a provision is not a waiver of
+that provision or of the right to enforce it later. A waiver must be explicit
+and in writing.
+
+25. Version and Controlling Language
+
+This license text is version 1.0 and its formal name is "Vanylith Community
+Source License 1.0." The English text is authoritative. Any translation is for
+convenience only, and the English text controls in case of conflict.
